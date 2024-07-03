@@ -1,49 +1,71 @@
-# sysmon-config | A Sysmon configuration file for everybody to fork #
+# sysmon-config | A Sysmon configuration file
 
-This is a Microsoft Sysinternals Sysmon configuration file template with default high-quality event tracing.
+This is a forked and modified version of @SwiftOnSecurity's [sysmon config](https://github.com/SwiftOnSecurity/sysmon-config).
 
-The file should function as a great starting point for system change monitoring in a self-contained and accessible package. This configuration and results should give you a good idea of what's possible for Sysmon. Note that this does not track things like authentication and other Windows events that are also vital for incident investigation.
+It started as a is simply copy of the original repository. We merged most of the 30+ open pull requests. Thus we have fixed many of the issues that are still present in the original version and extended the coverage with important new extensions.
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**[sysmonconfig-export.xml](https://github.com/SwiftOnSecurity/sysmon-config/blob/master/sysmonconfig-export.xml)**
+## Maintainers of this Fork
 
-Because virtually every line is commented and sections are marked with explanations, it should also function as a tutorial for Sysmon and a guide to critical monitoring areas in Windows systems.
+- KhulnaSoft Lab @khulnasoft-bot
+- Florian Roth @Neo23x0
+- Tobias Michalski @humpalum
+- Christian Burkard @phantinuss
+- Nasreddine Bencherchali @nas_bench
 
-- For a far more exhaustive and detailed approach to Sysmon configuration from a different approach, see also **[sysmon-modular](https://github.com/olafhartong/sysmon-modular)** by [@olafhartong](https://twitter.com/olafhartong), which can act as a superset of sysmon-config.
+## Additional coverage includes
 
-- Sysmon is a compliment to native Windows logging abilities, not a replacement for it. For valuable advice on these configurations, see **[MalwareArchaeology Logging Cheat Sheets](https://www.malwarearchaeology.com/cheat-sheets)** by [@HackerHurricane](https://twitter.com/hackerhurricane).
+- Cobalt Strike named pipes
+- PrinterNightmare
+- HiveNightmare
 
-Note: Exact syntax and filtering choices in the configuration are highly deliberate in what they target, and to have as little performance impact as possible. Sysmon's filtering abilities are different than the built-in Windows auditing features, so often a different approach is taken than the normal static listing of paths. 
+## Configs in this Repository
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**[See other forks of this configuration](https://github.com/SwiftOnSecurity/sysmon-config/network)**
+This repo includes the original and two additional configurations
 
-## Use ##
-### Install ###
+- `sysmonconfig-export.xml` the original config provided by @SwiftOnSecurity
+- `sysmonconfig-export-block.xml` the original config provided by @SwiftOnSecurity with some basic blocking rules usable since Sysmon v14 (WARNING: use it with care!)
+- `sysmonconfig-trace.xml` a config by @Cyb3rWard0g that logs just everything with a few examples for debugging or threat research purposes
+
+## Other Sysmon Configs
+
+- Olaf Hartong's [Sysmon Modular](https://github.com/olafhartong/sysmon-modular) - modular Sysmon config for easier maintenance and generation of specific configs
+
+## Testing
+
+This configuration is focused on detection coverage. We have only one rather small testing environment to avoid problematic expressions that trigger too often. It is recommended to test the downloaded configuration on a small set of systems in your environment in any case.
+
+## Feedback
+
+Since we don't have more than one environment to test the config ourselves, we rely on feedback from the community.
+
+Please report:
+
+1. Expressions that cause a high volume of events
+2. Broken configuration elements (typos, wrong conditions)
+3. Missing coverage (preferrably as a pull request)
+
+## Usage
+
+### Install
+
 Run with administrator rights
-~~~~
+
+```batch
 sysmon.exe -accepteula -i sysmonconfig-export.xml
-~~~~
+```
 
-### Update existing configuration ###
+### Update existing configuration
+
 Run with administrator rights
-~~~~
+
+```batch
 sysmon.exe -c sysmonconfig-export.xml
-~~~~
+```
 
-### Uninstall ###
+### Uninstall
+
 Run with administrator rights
-~~~~
+
+```batch
 sysmon.exe -u
-~~~~
-
-## Required actions ##
-
-### Prerequisites ###
-Highly recommend using [Notepad++](https://notepad-plus-plus.org/) to edit this configuration. It understands UNIX newline format and does XML syntax highlighting, which makes this very understandable. I do not recommend using the built-in Notepad.exe.
-
-### Customization ###
-You will need to install and observe the results of the configuration in your own environment before deploying it widely. For example, you will need to exclude actions of your antivirus, which will otherwise likely fill up your logs with useless information.
-
-The configuration is highly commented and designed to be self-explanatory to assist you in this customization to your environment.
-
-### Design notes ###
-This configuration expects software to be installed system-wide and NOT in the C:\Users folder. Various pieces of software install themselves in User directories, which are subject to extra monitoring. Where possible, you should install the system-wide version of these pieces of software, like Chrome. See the configuration file for more instructions.
+```
