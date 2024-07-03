@@ -556,7 +556,6 @@
 			<TargetFilename condition="end with">.wsh</TargetFilename>
 			<TargetFilename condition="end with">.xls</TargetFilename><!--Microsoft [ https://medium.com/@threathuntingteam/msxsl-exe-and-wmic-exe-a-way-to-proxy-code-execution-8d524f642b75 ] -->
 			<TargetFilename condition="end with">.xlsm</TargetFilename> <!--Microsoft:Office:Word: Macro-->
-			<TargetFilename condition="end with">\VMware\VMware Tools\tools.conf</TargetFilename> <!-- Monitor for potential persistence using VMwareToolBoxCmd -->
 			<TargetFilename name="DefaultUserModified" condition="begin with">C:\Users\Default</TargetFilename> <!--Windows: Changes to default user profile-->
 			<TargetFilename condition="begin with">C:\Windows\system32\Drivers</TargetFilename> <!--Microsoft: Drivers dropped here-->
 			<TargetFilename condition="begin with">C:\Windows\SysWOW64\Drivers</TargetFilename> <!--Microsoft: Drivers dropped here-->
@@ -1489,16 +1488,6 @@
 			<Hashes condition="contains">IMPHASH=96DF3A3731912449521F6F8D183279B1</Hashes> <!-- Backstab -->
 			<Hashes condition="contains">IMPHASH=7E6CF3FF4576581271AC8A313B2AAB46</Hashes> <!-- Backstab -->
 			<Hashes condition="contains">IMPHASH=51791678F351C03A0EB4E2A7B05C6E17</Hashes> <!-- Backstab -->
-			<Hashes condition="contains">IMPHASH=25CE42B079282632708FC846129E98A5</Hashes> <!-- Forensia -->
-			<Hashes condition="contains">IMPHASH=021BCCA20BA3381B11BDDE26B4E62F20</Hashes> <!-- EDRSandBlast -->
-			<Hashes condition="contains">IMPHASH=59223B5F52D8799D38E0754855CBDF42</Hashes> <!-- EDRSandBlast -->
-			<Hashes condition="contains">IMPHASH=81E75D8F1D276C156653D3D8813E4A43</Hashes> <!-- EDRSandBlast -->
-			<Hashes condition="contains">IMPHASH=17244E8B6B8227E57FE709CCAD421420</Hashes> <!-- EDRSandBlast -->
-			<Hashes condition="contains">IMPHASH=5B76DA3ACDEDC8A5CDF23A798B5936B4</Hashes> <!-- EDRSandBlast -->
-			<Hashes condition="contains">IMPHASH=CB2B65BB77D995CC1C0E5DF1C860133C</Hashes> <!-- EDRSandBlast -->
-			<Hashes condition="contains">IMPHASH=40445337761D80CF465136FAFB1F63E6</Hashes> <!-- EDRSandBlast -->
-			<Hashes condition="contains">IMPHASH=8A790F401B29FA87BC1E56F7272B3AA6</Hashes> <!-- EDRSilencer -->
-			<Hashes condition="contains">IMPHASH=B50199E952C875241B9CE06C971CE3C1</Hashes> <!-- EventLogCrasher -->
 			<Hashes condition="contains">MD5=7B17F15713FCF13C764535AA2BDF52AA</Hashes>													<!-- ShaprEvtMute -->
 			<Hashes condition="contains">SHA1=4E18320493042BCD7D21B53E258974BC460ACC78</Hashes>										<!-- ShaprEvtMute -->
 			<Hashes condition="contains">SHA256=477DFE485F5BD9540CC83E88FC04AAFB6DE49CF1ADC6BD857D5D6F4C1730A6D1</Hashes>	<!-- ShaprEvtMute -->
