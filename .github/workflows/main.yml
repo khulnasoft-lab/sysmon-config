@@ -36,7 +36,7 @@ jobs:
       uses: actions/checkout@v2
     
     - name: Download Sysmon 
-      run: Invoke-WebRequest http://live.sysinternals.com/tools/sysmon.exe -OutFile .\sysmon.exe
+      run: Invoke-WebRequest https://live.sysinternals.com/tools/sysmon.exe -OutFile .\sysmon.exe
       shell: powershell
       
     - name: Run Sysmon 
