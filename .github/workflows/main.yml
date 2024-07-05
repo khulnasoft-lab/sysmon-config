@@ -3,95 +3,57 @@ name: CI
 on:
   # Trigger the workflow on push or pull requests, but only for the
   # main branch
-  #push:
-  #  branches:
-  #  - master
+  push:
+    branches:
+    - master
   pull_request:
     branches:
     - master
   workflow_dispatch:
 jobs:
-
   msbuild:
     runs-on: 'windows-latest'
     steps:
-    - name: Checkout sysmon-config
-      uses: actions/checkout@v3
-
-    - name: Download Sysmon
-      run: Invoke-WebRequest http://live.sysinternals.com/tools/sysmon.exe -OutFile .\sysmon.exe
+    - name: Checkout open-sysmon-conf
+      uses: actions/checkout@v2
+    
+    - name: Download Sysmon 
+      run: Invoke-WebRequest https://live.sysinternals.com/tools/sysmon.exe -OutFile .\sysmon.exe
       shell: powershell
-
-    - name: Run Sysmon
+    
+    - name: Run Sysmon 
       run: .\sysmon.exe -accepteula -i sysmonconfig-export.xml
       shell: powershell
-
+      
     - name: Check Eventcount
-      run:  '$EventCount = 0 ;Get-WinEvent -ListLog Microsoft-Windows-Sysmon* | where {$_.RecordCount -gt 0} | foreach{$_;$EventCount = $EventCount + $_.RecordCount}|Out-Null;"Eventcount: "+$EventCount; if ($EventCount -gt 100){ Write-Output "Too many events"; $host.SetShouldExit(1)}'
+      run:  '$EventCount = (Get-WinEvent -ListLog Microsoft-Windows-Sysmon* | Where-Object {$_.RecordCount -gt 0} | Measure-Object -Property RecordCount -Sum).Sum; Write-Output "Eventcount: $EventCount"; if ($EventCount -gt 100) { Write-Output "Too many events"; $host.SetShouldExit(1) }'
       shell: powershell
-
-  msbuild-trace:
-    runs-on: 'windows-latest'
-    steps:
-    - name: Checkout sysmon-config
-      uses: actions/checkout@v3
-
-    - name: Download Sysmon
-      run: Invoke-WebRequest http://live.sysinternals.com/tools/sysmon.exe -OutFile .\sysmon.exe
-      shell: powershell
-
-    - name: Run Sysmon
-      run: .\sysmon.exe -accepteula -i sysmonconfig-trace.xml
-      shell: powershell
-
-    - name: Check Eventcount
-      run:  '$EventCount = 0 ;Get-WinEvent -ListLog Microsoft-Windows-Sysmon* | where {$_.RecordCount -gt 0} | foreach{$_;$EventCount = $EventCount + $_.RecordCount}|Out-Null;"Eventcount: "+$EventCount; if ($EventCount -gt 15000){ Write-Output "Too many events"; $host.SetShouldExit(1)}'
-      shell: powershell
-
-  msbuild-block:
-    runs-on: 'windows-latest'
-    steps:
-    - name: Checkout sysmon-config
-      uses: actions/checkout@v3
-
-    - name: Download Sysmon
-      run: Invoke-WebRequest http://live.sysinternals.com/tools/sysmon.exe -OutFile .\sysmon.exe
-      shell: powershell
-
-    - name: Run Sysmon
-      run: .\sysmon.exe -accepteula -i sysmonconfig-export-block.xml
-      shell: powershell
-
-    - name: Check Eventcount
-      run:  '$EventCount = 0 ;Get-WinEvent -ListLog Microsoft-Windows-Sysmon* | where {$_.RecordCount -gt 0} | foreach{$_;$EventCount = $EventCount + $_.RecordCount}|Out-Null;"Eventcount: "+$EventCount; if ($EventCount -gt 100){ Write-Output "Too many events"; $host.SetShouldExit(1)}'
-      shell: powershell
-
+      
   busySystem:
     runs-on: 'windows-latest'
     steps:
-    - name: Checkout sysmon-config
-      uses: actions/checkout@v3
-
-    - name: Download Sysmon
-      run: Invoke-WebRequest http://live.sysinternals.com/tools/sysmon.exe -OutFile .\sysmon.exe
+    - name: Checkout open-sysmon-conf
+      uses: actions/checkout@v2
+    
+    - name: Download Sysmon 
+      run: Invoke-WebRequest https://live.sysinternals.com/tools/sysmon.exe -OutFile .\sysmon.exe
       shell: powershell
-
-    - name: Run Sysmon
+      
+    - name: Run Sysmon 
       run: .\sysmon.exe -accepteula -i sysmonconfig-export.xml
       shell: powershell
-
+      
     - name: Print Eventcount
       run: Get-WinEvent -ListLog Microsoft-Windows-Sysmon*
-
+      
     - name: Install some Choco Packages
-      run: choco install ninja adobereader googlechrome firefox nodejs
-
+      run: choco install ninja --version=1.10.2 adobereader --version=2021.001.20145 googlechrome --version=91.0.4472.124 firefox --version=89.0.2 python3 --version=3.9.6
     - name: Download User Sim
       run: Invoke-WebRequest https://github.com/humpalum/sim-user/releases/download/latest/5minuser.exe  -OutFile .\5minuser.exe
-
+      
     - name: Run User Sim
       run: .\5minuser.exe
-
+    
     - name: Check Eventcount
-      run:  '$EventCount = 0 ;Get-WinEvent -ListLog Microsoft-Windows-Sysmon* | where {$_.RecordCount -gt 0} | foreach{$_;$EventCount = $EventCount + $_.RecordCount}|Out-Null;"Eventcount: "+$EventCount; if ($EventCount -gt 10000){ Write-Output "Too many events"; $host.SetShouldExit(1)}'
+      run:  '$EventCount = (Get-WinEvent -ListLog Microsoft-Windows-Sysmon* | Where-Object {$_.RecordCount -gt 0} | Measure-Object -Property RecordCount -Sum).Sum; Write-Output "Eventcount: $EventCount"; if ($EventCount -gt 10000) { Write-Output "Too many events"; $host.SetShouldExit(1) }'
       shell: powershell
