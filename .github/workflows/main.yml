@@ -1,59 +1,80 @@
 name: CI
 
 on:
-  # Trigger the workflow on push or pull requests, but only for the
-  # main branch
   push:
     branches:
-    - master
+      - master
   pull_request:
     branches:
-    - master
+      - master
   workflow_dispatch:
+
 jobs:
   msbuild:
     runs-on: 'windows-latest'
     steps:
-    - name: Checkout open-sysmon-conf
-      uses: actions/checkout@v2
-    
-    - name: Download Sysmon 
-      run: Invoke-WebRequest https://live.sysinternals.com/tools/sysmon.exe -OutFile .\sysmon.exe
-      shell: powershell
-    
-    - name: Run Sysmon 
-      run: .\sysmon.exe -accepteula -i sysmonconfig-export.xml
-      shell: powershell
+      - name: Checkout open-sysmon-conf
+        uses: actions/checkout@v2
       
-    - name: Check Eventcount
-      run:  '$EventCount = (Get-WinEvent -ListLog Microsoft-Windows-Sysmon* | Where-Object {$_.RecordCount -gt 0} | Measure-Object -Property RecordCount -Sum).Sum; Write-Output "Eventcount: $EventCount"; if ($EventCount -gt 100) { Write-Output "Too many events"; $host.SetShouldExit(1) }'
-      shell: powershell
+      - name: Download Sysmon 
+        run: Invoke-WebRequest https://live.sysinternals.com/tools/sysmon.exe -OutFile .\sysmon.exe
+        shell: powershell
+      
+      - name: Run Sysmon 
+        run: .\sysmon.exe -accepteula -i sysmonconfig-export.xml
+        shell: powershell
+        
+      - name: Check Eventcount
+        run: |
+          $EventCount = (Get-WinEvent -ListLog Microsoft-Windows-Sysmon* | Where-Object {$_.RecordCount -gt 0} | Measure-Object -Property RecordCount -Sum).Sum
+          Write-Output "Eventcount: $EventCount"
+          if ($EventCount -gt 100) { 
+            Write-Output "Too many events"
+            $host.SetShouldExit(1) 
+          }
+        shell: powershell
       
   busySystem:
     runs-on: 'windows-latest'
     steps:
-    - name: Checkout open-sysmon-conf
-      uses: actions/checkout@v2
-    
-    - name: Download Sysmon 
-      run: Invoke-WebRequest https://live.sysinternals.com/tools/sysmon.exe -OutFile .\sysmon.exe
-      shell: powershell
+      - name: Checkout open-sysmon-conf
+        uses: actions/checkout@v2
       
-    - name: Run Sysmon 
-      run: .\sysmon.exe -accepteula -i sysmonconfig-export.xml
-      shell: powershell
+      - name: Download Sysmon 
+        run: Invoke-WebRequest https://live.sysinternals.com/tools/sysmon.exe -OutFile .\sysmon.exe
+        shell: powershell
+        
+      - name: Run Sysmon 
+        run: .\sysmon.exe -accepteula -i sysmonconfig-export.xml
+        shell: powershell
+        
+      - name: Print Eventcount
+        run: Get-WinEvent -ListLog Microsoft-Windows-Sysmon*
+        shell: powershell
+        
+      - name: Install some Choco Packages
+        run: |
+          choco install ninja --version=1.10.2 `
+            adobereader --version=2021.001.20145 `
+            googlechrome --version=91.0.4472.124 `
+            firefox --version=89.0.2 `
+            python3 --version=3.9.6 --install-arguments="'/l*v c:\python3_msi_install.log'"
+        shell: powershell
+        
+      - name: Download User Sim
+        run: Invoke-WebRequest https://github.com/humpalum/sim-user/releases/download/latest/5minuser.exe -OutFile .\5minuser.exe
+        shell: powershell
+        
+      - name: Run User Sim
+        run: .\5minuser.exe
+        shell: powershell
       
-    - name: Print Eventcount
-      run: Get-WinEvent -ListLog Microsoft-Windows-Sysmon*
-      
-    - name: Install some Choco Packages
-      run: choco install ninja --version=1.10.2 adobereader --version=2021.001.20145 googlechrome --version=91.0.4472.124 firefox --version=89.0.2 python3 --version=3.9.6
-    - name: Download User Sim
-      run: Invoke-WebRequest https://github.com/humpalum/sim-user/releases/download/latest/5minuser.exe  -OutFile .\5minuser.exe
-      
-    - name: Run User Sim
-      run: .\5minuser.exe
-    
-    - name: Check Eventcount
-      run:  '$EventCount = (Get-WinEvent -ListLog Microsoft-Windows-Sysmon* | Where-Object {$_.RecordCount -gt 0} | Measure-Object -Property RecordCount -Sum).Sum; Write-Output "Eventcount: $EventCount"; if ($EventCount -gt 10000) { Write-Output "Too many events"; $host.SetShouldExit(1) }'
-      shell: powershell
+      - name: Check Eventcount
+        run: |
+          $EventCount = (Get-WinEvent -ListLog Microsoft-Windows-Sysmon* | Where-Object {$_.RecordCount -gt 0} | Measure-Object -Property RecordCount -Sum).Sum
+          Write-Output "Eventcount: $EventCount"
+          if ($EventCount -gt 10000) { 
+            Write-Output "Too many events"
+            $host.SetShouldExit(1) 
+          }
+        shell: powershell
