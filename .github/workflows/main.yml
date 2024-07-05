@@ -55,5 +55,5 @@ jobs:
       run: .\5minuser.exe
     
     - name: Check Eventcount
-      run:  '$EventCount = 0 ;Get-WinEvent -ListLog Microsoft-Windows-Sysmon* | where {$_.RecordCount -gt 0} | foreach{$_;$EventCount = $EventCount + $_.RecordCount}|Out-Null;"Eventcount: "+$EventCount; if ($EventCount -gt 10000){ Write-Output "Too many events"; $host.SetShouldExit(1)}'
+      run:  '$EventCount = (Get-WinEvent -ListLog Microsoft-Windows-Sysmon* | Where-Object {$_.RecordCount -gt 0} | Measure-Object -Property RecordCount -Sum).Sum; Write-Output "Eventcount: $EventCount"; if ($EventCount -gt 10000) { Write-Output "Too many events"; $host.SetShouldExit(1) }'
       shell: powershell
